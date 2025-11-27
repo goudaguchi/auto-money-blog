@@ -748,30 +748,129 @@ export default function OSDiagnosisPage() {
       const executiveScore = calculateCategoryScore('executive');
       const socialScore = calculateCategoryScore('social');
       
-      // 神経タイプの判定
-      let neurotype = '標準型';
-      const traits: string[] = [];
+      // ========================================
+      // 拡張版：神経タイプの詳細判定（15種類以上）
+      // ========================================
+      let neurotype = 'ニューロティピカル（定型発達）';
       
-      if (sensoryScore >= 1.5) traits.push('感覚過敏');
-      if (emotionalScore >= 1.5) traits.push('高共感');
-      if (stimulationScore >= 1.5 && sensoryScore >= 1) traits.push('HSS型HSP');
-      else if (stimulationScore >= 1.5) traits.push('刺激追求');
-      if (executiveScore >= 1.5) traits.push('ADHD傾向');
-      if (socialScore >= 1.5) traits.push('ASD傾向');
+      // 判定用フラグ
+      const hasHSP = sensoryScore >= 1.5 && emotionalScore >= 1.5;
+      const hasHSS = stimulationScore >= 1.5;
+      const hasADHD_inattention = executiveScore >= 1.5;
+      const hasADHD_hyperactive = stimulationScore >= 1.5 && executiveScore >= 1;
+      const hasASD = socialScore >= 1.5;
+      const hasSensory = sensoryScore >= 1.5;
+      const hasHighEmpathy = emotionalScore >= 1.5;
       
-      if (sensoryScore >= 1.5 && emotionalScore >= 1.5) {
-        if (stimulationScore >= 1.5) {
-          neurotype = 'HSS型HSP（刺激追求型高感受性）';
+      // ========================================
+      // 複合型（最も優先度が高い）
+      // ========================================
+      
+      // AuDHD（ASD + ADHD）- 実は非常に多い組み合わせ
+      if (hasASD && (hasADHD_inattention || hasADHD_hyperactive)) {
+        if (hasHSP) {
+          neurotype = 'AuDHD + HSP（複合型神経多様性）';
+        } else if (hasADHD_inattention && hasADHD_hyperactive) {
+          neurotype = 'AuDHD - 混合型（ASD + ADHD混合）';
+        } else if (hasADHD_inattention) {
+          neurotype = 'AuDHD - 不注意優勢（ASD + ADHD不注意）';
         } else {
-          neurotype = 'HSP（高感受性）';
+          neurotype = 'AuDHD - 多動優勢（ASD + ADHD多動）';
         }
-      } else if (executiveScore >= 1.5 && stimulationScore >= 1.5) {
-        neurotype = 'ADHD傾向（衝動・注意特性）';
-      } else if (socialScore >= 1.5 && sensoryScore >= 1.5) {
-        neurotype = 'ASD傾向（社会・感覚特性）';
-      } else if (traits.length > 0) {
-        neurotype = traits.join(' + ');
       }
+      // HSP + ADHD
+      else if (hasHSP && (hasADHD_inattention || hasADHD_hyperactive)) {
+        if (hasHSS) {
+          neurotype = 'HSS型HSP + ADHD（高感受性×刺激追求×注意特性）';
+        } else if (hasADHD_inattention && !hasADHD_hyperactive) {
+          neurotype = 'HSP + ADHD不注意型（繊細×集中困難）';
+        } else {
+          neurotype = 'HSP + ADHD混合型（繊細×衝動性）';
+        }
+      }
+      // HSP + ASD
+      else if (hasHSP && hasASD) {
+        neurotype = 'HSP + ASD傾向（高感受性×社会的認知特性）';
+      }
+      
+      // ========================================
+      // ADHD系（単体）
+      // ========================================
+      else if (hasADHD_inattention || hasADHD_hyperactive) {
+        if (hasADHD_inattention && hasADHD_hyperactive) {
+          neurotype = 'ADHD - 混合型（不注意 + 多動・衝動）';
+        } else if (hasADHD_inattention && stimulationScore < 1) {
+          neurotype = 'ADHD - 不注意優勢型（ADD傾向）';
+        } else if (hasADHD_hyperactive && executiveScore < 1.5) {
+          neurotype = 'ADHD - 多動・衝動優勢型';
+        } else if (hasADHD_inattention) {
+          neurotype = 'ADHD - 不注意優勢型';
+        } else {
+          neurotype = 'ADHD傾向（実行機能の課題）';
+        }
+      }
+      
+      // ========================================
+      // ASD系（単体）
+      // ========================================
+      else if (hasASD) {
+        if (hasSensory && socialScore >= 2) {
+          neurotype = 'ASD（自閉スペクトラム - 感覚過敏併存）';
+        } else if (socialScore >= 2) {
+          neurotype = 'ASD（自閉スペクトラム）';
+        } else if (hasSensory) {
+          neurotype = 'ASD傾向（社会的認知 + 感覚特性）';
+        } else {
+          neurotype = 'アスペルガー傾向（社会的認知特性）';
+        }
+      }
+      
+      // ========================================
+      // HSP系（単体）
+      // ========================================
+      else if (hasHSP) {
+        if (hasHSS) {
+          neurotype = 'HSS型HSP（刺激追求型・高感受性）';
+        } else if (stimulationScore >= 1 && stimulationScore < 1.5) {
+          neurotype = 'HSE（外向型HSP）';
+        } else if (stimulationScore < 0.5) {
+          neurotype = 'HSP - 内向型（繊細×内省的）';
+        } else {
+          neurotype = 'HSP（Highly Sensitive Person）';
+        }
+      }
+      
+      // ========================================
+      // 単一特性
+      // ========================================
+      else if (hasSensory && !hasHighEmpathy) {
+        neurotype = '感覚処理感受性（SPS）- 感覚過敏型';
+      }
+      else if (hasHighEmpathy && !hasSensory) {
+        neurotype = 'エンパス傾向（高共感性）';
+      }
+      else if (hasHSS && !hasADHD_inattention) {
+        neurotype = '刺激追求型（High Sensation Seeker）';
+      }
+      
+      // ========================================
+      // 軽度の特性がある場合
+      // ========================================
+      else if (sensoryScore >= 1 || emotionalScore >= 1 || executiveScore >= 1 || socialScore >= 1) {
+        const mildTraits: string[] = [];
+        if (sensoryScore >= 1) mildTraits.push('感覚敏感');
+        if (emotionalScore >= 1) mildTraits.push('共感的');
+        if (stimulationScore >= 1) mildTraits.push('活動的');
+        if (executiveScore >= 1) mildTraits.push('マイペース');
+        if (socialScore >= 1) mildTraits.push('独自路線');
+        
+        if (mildTraits.length > 0) {
+          neurotype = `ニューロティピカル（${mildTraits.join('・')}傾向）`;
+        }
+      }
+      
+      // デフォルト: 定型発達
+      // neurotype = 'ニューロティピカル（定型発達）' は初期値
       
       setSensoryResult({
         sensoryOverload: sensoryScore,
