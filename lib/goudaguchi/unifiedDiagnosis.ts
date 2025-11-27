@@ -1,7 +1,7 @@
 // 5層統合診断システム
 // 全レイヤーのデータを統合して最終診断を生成
 
-import type { DiagnosisScores } from '../types';
+import type { DiagnosisScores } from './types';
 import type { HardwareResult } from './layers/hardware';
 import type { KernelResult } from './layers/kernel';
 import type { DriverResult } from './layers/driver';
