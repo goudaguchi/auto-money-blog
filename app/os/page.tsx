@@ -502,9 +502,6 @@ export default function OSDiagnosisPage() {
   }[]>([]);
   const [showCognitiveStimulus, setShowCognitiveStimulus] = useState(false);
   const [cognitiveRule, setCognitiveRule] = useState<'match' | 'mismatch'>('match');
-  
-  // パラメータ詳細のアコーディオン
-  const [expandedParams, setExpandedParams] = useState<string[]>([]);
   const [showRuleChange, setShowRuleChange] = useState(false);
 
   const [storyIndex, setStoryIndex] = useState(0);
@@ -2096,40 +2093,24 @@ export default function OSDiagnosisPage() {
               <span className="text-2xl">📊</span>
               <span className="text-teal-400/80">7つのパラメータ詳細</span>
             </h2>
-            <p className="text-sm text-gray-400 mb-6">各項目をタップすると詳細が見れます</p>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {(Object.keys(scores) as (keyof DiagnosisScores)[]).map((key) => {
                 const value = scores[key];
                 const detail = parameterDetails[key];
                 const percentage = ((value + 10) / 20) * 100;
                 const isHigh = value >= 2;
                 const isLow = value <= -2;
-                const isExpanded = expandedParams.includes(key);
-
-                const toggleExpand = () => {
-                  setExpandedParams(prev => 
-                    prev.includes(key) 
-                      ? prev.filter(k => k !== key)
-                      : [...prev, key]
-                  );
-                };
 
                 return (
-                  <div key={key} className="bg-black/20 rounded-xl overflow-hidden">
-                    {/* ヘッダー（タップで開閉） */}
-                    <button
-                      onClick={toggleExpand}
-                      className="w-full p-4 text-left hover:bg-white/5 transition-all"
-                    >
+                  <div key={key} className="bg-black/20 rounded-xl p-4 space-y-4">
+                    {/* ヘッダー */}
+                    <div>
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-xl">{detail.icon}</span>
                         <span className="font-medium flex-1">{detail.name}</span>
                         <span className={`text-sm ${value >= 0 ? 'text-cyan-400' : 'text-red-400'}`}>
                           {value >= 0 ? '+' : ''}{value}
-                        </span>
-                        <span className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>
-                          ▼
                         </span>
                       </div>
                       
@@ -2143,57 +2124,52 @@ export default function OSDiagnosisPage() {
                         </div>
                         <span className="text-xs text-gray-500 w-16 text-right">{detail.highLabel}</span>
                       </div>
-                    </button>
+                    </div>
 
-                    {/* 詳細（展開時のみ表示） */}
-                    {isExpanded && (
-                      <div className="px-4 pb-4 space-y-4 border-t border-white/10 pt-4">
-                        {/* 基本説明 */}
-                        <div>
-                          <p className="text-sm text-gray-400 mb-2">{detail.description}</p>
-                          <p className="text-sm text-gray-300 bg-white/5 rounded-lg p-3">
-                            {isHigh ? detail.highAdvice : isLow ? detail.lowAdvice : 'バランスが取れています。状況に応じて柔軟に対応できるタイプです。'}
+                    {/* 基本説明 */}
+                    <div>
+                      <p className="text-sm text-gray-400 mb-2">{detail.description}</p>
+                      <p className="text-sm text-gray-300 bg-white/5 rounded-lg p-3">
+                        {isHigh ? detail.highAdvice : isLow ? detail.lowAdvice : 'バランスが取れています。状況に応じて柔軟に対応できるタイプです。'}
+                      </p>
+                    </div>
+
+                    {/* 詳細説明 */}
+                    <div className="bg-teal-900/20 rounded-lg p-3 border border-teal-500/20">
+                      <p className="text-xs text-teal-400 font-medium mb-1">🔬 詳しい解説</p>
+                      <p className="text-sm text-gray-300">{detail.detailedExplanation}</p>
+                    </div>
+
+                    {/* 具体的なシチュエーション */}
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium mb-2">💭 こんなシチュエーションに心当たりは？</p>
+                      <div className="space-y-1">
+                        {(isHigh ? detail.situations.high : isLow ? detail.situations.low : detail.situations.high).map((situation, i) => (
+                          <p key={i} className="text-sm text-gray-400 flex items-start gap-2">
+                            <span className="text-gray-600">•</span>
+                            {situation}
                           </p>
-                        </div>
-
-                        {/* 詳細説明 */}
-                        <div className="bg-teal-900/20 rounded-lg p-3 border border-teal-500/20">
-                          <p className="text-xs text-teal-400 font-medium mb-1">🔬 詳しい解説</p>
-                          <p className="text-sm text-gray-300">{detail.detailedExplanation}</p>
-                        </div>
-
-                        {/* 具体的なシチュエーション */}
-                        <div>
-                          <p className="text-xs text-gray-400 font-medium mb-2">💭 こんなシチュエーションに心当たりは？</p>
-                          <div className="space-y-1">
-                            {(isHigh ? detail.situations.high : isLow ? detail.situations.low : detail.situations.high).map((situation, i) => (
-                              <p key={i} className="text-sm text-gray-400 flex items-start gap-2">
-                                <span className="text-gray-600">•</span>
-                                {situation}
-                              </p>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* 具体的な対策 */}
-                        <div>
-                          <p className="text-xs text-gray-400 font-medium mb-2">🛠️ 具体的な対策</p>
-                          <div className="space-y-2">
-                            {(isHigh ? detail.strategies.high : isLow ? detail.strategies.low : ['現状維持でOK。状況に応じて柔軟に対応していきましょう。']).map((strategy, i) => (
-                              <p key={i} className="text-sm text-gray-300 bg-white/5 rounded-lg p-2 flex items-start gap-2">
-                                <span className="text-teal-400">{i + 1}.</span>
-                                {strategy}
-                              </p>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* 関連する神経特性 */}
-                        <div className="text-xs text-gray-500 pt-2 border-t border-white/5">
-                          <span className="text-gray-600">📎 関連:</span> {detail.relatedTo}
-                        </div>
+                        ))}
                       </div>
-                    )}
+                    </div>
+
+                    {/* 具体的な対策 */}
+                    <div>
+                      <p className="text-xs text-gray-400 font-medium mb-2">🛠️ 具体的な対策</p>
+                      <div className="space-y-2">
+                        {(isHigh ? detail.strategies.high : isLow ? detail.strategies.low : ['現状維持でOK。状況に応じて柔軟に対応していきましょう。']).map((strategy, i) => (
+                          <p key={i} className="text-sm text-gray-300 bg-white/5 rounded-lg p-2 flex items-start gap-2">
+                            <span className="text-teal-400">{i + 1}.</span>
+                            {strategy}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 関連する神経特性 */}
+                    <div className="text-xs text-gray-500 pt-2 border-t border-white/5">
+                      <span className="text-gray-600">📎 関連:</span> {detail.relatedTo}
+                    </div>
                   </div>
                 );
               })}
