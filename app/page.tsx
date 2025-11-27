@@ -12,6 +12,21 @@ export default async function HomePage() {
         ユダヤの教え / AI時代 / マネーの捉え方を、ゆるく言語化していくブログ。
       </p>
 
+      <div className="mb-8 flex gap-4">
+        <Link
+          href="/tasks"
+          className="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+        >
+          タスク管理へ →
+        </Link>
+        <Link
+          href="/os"
+          className="inline-block px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors font-medium"
+        >
+          OS診断へ →
+        </Link>
+      </div>
+
       <ul className="space-y-6">
         {posts.map((post) => (
           <li key={post.id}>

@@ -1,0 +1,123 @@
+[
+  {
+    "id": "episode1",
+    "title": "締切の夜",
+    "description": "明日が締切の重要な仕事がある夜、友達から飲み会の誘いが来ました。",
+    "scenes": [
+      {
+        "id": "scene1",
+        "text": "明日が締切の重要な仕事がある夜、友達から「今から飲みに行かない？」という誘いが来ました。あなたはどうしますか？",
+        "choices": [
+          {
+            "id": "choice1",
+            "text": "断って仕事に集中する",
+            "scores": {
+              "impulseControl": 2,
+              "planning": 2,
+              "riskTolerance": -1
+            }
+          },
+          {
+            "id": "choice2",
+            "text": "少しだけ行って、深夜に帰ってから作業する",
+            "scores": {
+              "impulseControl": 0,
+              "planning": 0,
+              "riskTolerance": 1
+            }
+          },
+          {
+            "id": "choice3",
+            "text": "行く！締切は何とかなる",
+            "scores": {
+              "impulseControl": -2,
+              "planning": -2,
+              "riskTolerance": 2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "episode2",
+    "title": "給料日の誘惑",
+    "description": "給料日、欲しかった商品がセールになっていました。",
+    "scenes": [
+      {
+        "id": "scene1",
+        "text": "給料日、ずっと欲しかった商品が50%オフになっていました。でも今月は予算が厳しいです。あなたはどうしますか？",
+        "choices": [
+          {
+            "id": "choice1",
+            "text": "我慢して、来月の予算を立ててから考える",
+            "scores": {
+              "moneySense": 2,
+              "impulseControl": 2,
+              "selfControl": 2
+            }
+          },
+          {
+            "id": "choice2",
+            "text": "少し考えて、本当に必要か判断する",
+            "scores": {
+              "moneySense": 1,
+              "impulseControl": 0,
+              "selfControl": 1
+            }
+          },
+          {
+            "id": "choice3",
+            "text": "今しかない！すぐに購入する",
+            "scores": {
+              "moneySense": -2,
+              "impulseControl": -2,
+              "selfControl": -2
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "episode3",
+    "title": "断りづらい頼み事",
+    "description": "疲れている時に、友達から大きな頼み事をされました。",
+    "scenes": [
+      {
+        "id": "scene1",
+        "text": "今日はとても疲れている日。そんな時、友達から「明日、引っ越し手伝ってくれない？」と頼まれました。あなたはどうしますか？",
+        "choices": [
+          {
+            "id": "choice1",
+            "text": "正直に疲れていることを伝えて断る",
+            "scores": {
+              "boundarySetting": 2,
+              "selfAdvocacy": 2,
+              "empathy": 0
+            }
+          },
+          {
+            "id": "choice2",
+            "text": "少し手伝える範囲で協力する",
+            "scores": {
+              "boundarySetting": 1,
+              "selfAdvocacy": 1,
+              "empathy": 1
+            }
+          },
+          {
+            "id": "choice3",
+            "text": "断れずに引き受ける",
+            "scores": {
+              "boundarySetting": -2,
+              "selfAdvocacy": -2,
+              "empathy": 2
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
+
