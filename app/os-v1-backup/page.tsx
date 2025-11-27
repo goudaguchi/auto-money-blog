@@ -1935,21 +1935,13 @@ export default function OSDiagnosisPage() {
             </div>
           </div>
 
-          <div className="text-center space-y-4">
-            <a
-              href="/os/feedback"
-              className="inline-block px-8 py-3 bg-teal-600 hover:bg-teal-500 rounded-xl transition-all font-medium text-white"
+          <div className="text-center">
+            <button
+              onClick={handleStart}
+              className="px-8 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all font-medium"
             >
-              📝 診断の感想を教える
-            </a>
-            <div>
-              <button
-                onClick={handleStart}
-                className="px-8 py-3 bg-white/10 hover:bg-white/20 rounded-xl transition-all font-medium"
-              >
-                もう一度診断する
-              </button>
-            </div>
+              もう一度診断する
+            </button>
           </div>
         </div>
       </main>
